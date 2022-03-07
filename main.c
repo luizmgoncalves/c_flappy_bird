@@ -8,9 +8,13 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-#define COLOR_BITS 8
 #define DISPLAY_WIDTH 800
 #define DISPLAY_HEIGHT 400
+
+#define BACKGROUND_COLOR al_map_rgba(0, 0, 100, 255)
+#define PIPE_COLOR al_map_rgba(255, 255, 0, 255)
+#define LETTER_COLOR al_map_rgba(255, 100, 0, 255)
+#define PLAYER_COLOR al_map_rgba(255, 255, 255, 255)
 
 #define PIPE_WIDTH 20
 #define PIPE_GAP 80
@@ -20,7 +24,7 @@
 
 typedef struct {
 	float x, y, r, velx, vely;
-	int jumped, pontuation;
+	int pontuation;
 } Character;
 
 typedef struct {
@@ -83,23 +87,9 @@ void generate_pipe_x(Pipe *pipe, int index){
 }
 
 void draw_pipe(Pipe *pipe){
-	al_draw_filled_rectangle(pipe->x, 0, pipe->x+PIPE_WIDTH, pipe->y1, al_map_rgba(255, 255, 0, 255));
+	al_draw_filled_rectangle(pipe->x, 0, pipe->x+PIPE_WIDTH, pipe->y1, PIPE_COLOR);
 	
-	al_draw_filled_rectangle(pipe->x, pipe->y1+PIPE_GAP, pipe->x+PIPE_WIDTH, DISPLAY_HEIGHT, al_map_rgba(255, 255, 0, 255));
-}
-
-void update_animation(Character *player){
-	static int index=0;
-	if (!player->jumped) return ;
-	
-	if (index > 10){
-		index=0;
-		player->jumped = 0;
-		return ;
-	}
-	
-	al_draw_filled_circle(player->x, player->y+pow(1.3, index), player->r, al_map_rgba(0, 255, 255, 10));
-	index ++;
+	al_draw_filled_rectangle(pipe->x, pipe->y1+PIPE_GAP, pipe->x+PIPE_WIDTH, DISPLAY_HEIGHT, PIPE_COLOR);
 }
 
 void update_player(Character *player){
@@ -124,7 +114,7 @@ int main(){
 
 	Character player;
 	Pipe pipes[PIPES_NUMBER];
-	int running;
+	int running, max_pontuation=0;
 
 	
 	
@@ -149,15 +139,13 @@ int main(){
 	keyb_source = al_get_keyboard_event_source();
 
 	al_register_event_source(keyb_event_queue, keyb_source);
-
-	al_clear_to_color(al_map_rgba(255, 100, 0, 255));
 	
 	ALLEGRO_EVENT mouse_event;
 	ALLEGRO_EVENT keyboard_event;
 	ALLEGRO_EVENT display_event;
 	
-	al_clear_to_color(al_map_rgba(255, 100, 0, 255));
-	al_draw_text(font, al_map_rgba(0, 0, 0, 255), DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, ALLEGRO_ALIGN_CENTRE, "Aperte o botao direito do mouse para iniciar o jogo.");
+	al_clear_to_color(BACKGROUND_COLOR);
+	al_draw_text(font, LETTER_COLOR, DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, ALLEGRO_ALIGN_CENTRE, "Aperte o botao direito do mouse para iniciar o jogo.");
 	
 	al_flip_display();
 	
@@ -201,7 +189,6 @@ int main(){
 				
 				if (mouse_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && mouse_event.mouse.button == 1){
 					player.vely = -5;
-					player.jumped = 1;
 				}
 			}
 			
@@ -219,9 +206,9 @@ int main(){
 					return 0;
 			}
 			
-			al_clear_to_color(al_map_rgba(255, 100, 0, 255));
+			al_clear_to_color(BACKGROUND_COLOR);
 			
-			al_draw_textf(font, al_map_rgba(0, 0, 0, 255), DISPLAY_WIDTH/2-20, 5, ALLEGRO_ALIGN_CENTRE, "%d", player.pontuation);
+			al_draw_textf(font, LETTER_COLOR, DISPLAY_WIDTH/2-20, 5, ALLEGRO_ALIGN_CENTRE, "%d", player.pontuation);
 			
 			update_player(&player);
 			update_pipes(&pipes[0], &player);
@@ -235,15 +222,16 @@ int main(){
 				running = 0;
 			}
 			
-			update_animation(&player);
-			
-			al_draw_filled_circle((int)player.x, (int)player.y, player.r, al_map_rgba(0, 0, 0, 255));
+			al_draw_filled_circle((int)player.x, (int)player.y, pl#10BBC8#14AEB9#039E9A#039E9Aayer.r, PLAYER_COLOR);
 			al_flip_display();
 			al_rest(0.01);
 		}
 		
-		al_clear_to_color(al_map_rgba(255, 100, 0, 255));
-		al_draw_textf(font, al_map_rgba(0, 0, 0, 255), DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, ALLEGRO_ALIGN_CENTRE, "A sua pontuacao final eh de %d pontos.", player.pontuation);
+		if (player.pontuation > max_pontuation)
+			max_pontuation = player.pontuation;
+		
+		al_clear_to_color(BACKGROUND_COLOR);
+		al_draw_multiline_textf(font, LETTER_COLOR, DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2-20*4, 500, 20, ALLEGRO_ALIGN_CENTRE, "A sua pontuacao final eh de %d pontos.\n\nA pontuacao maxima alcancada foi %d.\n\nClique com o botao direito do mouse para iniciar o jogo novamente.", player.pontuation, max_pontuation);
 		
 		al_flip_display();
 		
