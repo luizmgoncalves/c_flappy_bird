@@ -8,8 +8,8 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-#define DISPLAY_WIDTH 800
-#define DISPLAY_HEIGHT 400
+#define DISPLAY_WIDTH 900
+#define DISPLAY_HEIGHT 600
 
 #define BACKGROUND_COLOR al_map_rgba(0, 0, 100, 255)
 #define PIPE_COLOR al_map_rgba(255, 255, 0, 255)
@@ -222,7 +222,7 @@ int main(){
 				running = 0;
 			}
 			
-			al_draw_filled_circle((int)player.x, (int)player.y, pl#10BBC8#14AEB9#039E9A#039E9Aayer.r, PLAYER_COLOR);
+			al_draw_filled_circle((int)player.x, (int)player.y, player.r, PLAYER_COLOR);
 			al_flip_display();
 			al_rest(0.01);
 		}
