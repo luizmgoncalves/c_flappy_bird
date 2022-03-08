@@ -9,7 +9,7 @@
 #include <allegro5/allegro_ttf.h>
 
 #define DISPLAY_WIDTH 900
-#define DISPLAY_HEIGHT 600
+#define DISPLAY_HEIGHT 400
 
 #define BACKGROUND_COLOR al_map_rgba(0, 0, 100, 255)
 #define PIPE_COLOR al_map_rgba(255, 255, 0, 255)
@@ -131,17 +131,7 @@ int main(){
 	display_event_queue = al_create_event_queue();
 	al_register_event_source(display_event_queue, al_get_display_event_source(display));
 	
-	
-	ALLEGRO_EVENT_QUEUE *keyb_event_queue;
-	keyb_event_queue = al_create_event_queue();
-
-	ALLEGRO_EVENT_SOURCE *keyb_source;
-	keyb_source = al_get_keyboard_event_source();
-
-	al_register_event_source(keyb_event_queue, keyb_source);
-	
 	ALLEGRO_EVENT mouse_event;
-	ALLEGRO_EVENT keyboard_event;
 	ALLEGRO_EVENT display_event;
 	
 	al_clear_to_color(BACKGROUND_COLOR);
@@ -155,10 +145,6 @@ int main(){
 			if (mouse_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && mouse_event.mouse.button == 2){
 				running = 0;
 			}
-		}
-		
-		for (;!al_is_event_queue_empty(keyb_event_queue);){
-			al_get_next_event(keyb_event_queue, &keyboard_event);
 		}
 		
 		for (;!al_is_event_queue_empty(display_event_queue);){
@@ -189,14 +175,6 @@ int main(){
 				
 				if (mouse_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && mouse_event.mouse.button == 1){
 					player.vely = -5;
-				}
-			}
-			
-			for (;!al_is_event_queue_empty(keyb_event_queue);){
-				al_get_next_event(keyb_event_queue, &keyboard_event);
-			
-				if (keyboard_event.type == ALLEGRO_EVENT_KEY_DOWN && keyboard_event.keyboard.keycode == ALLEGRO_KEY_Q){
-					running=0;
 				}
 			}
 			
@@ -239,14 +217,6 @@ int main(){
 			for (;!al_is_event_queue_empty(mouse_event_queue);){
 				al_get_next_event(mouse_event_queue, &mouse_event);
 				if (mouse_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && mouse_event.mouse.button == 2){
-					goto main_loop;
-				}
-			}
-			
-			for (;!al_is_event_queue_empty(keyb_event_queue);){
-				al_get_next_event(keyb_event_queue, &keyboard_event);
-			
-				if (keyboard_event.type == ALLEGRO_EVENT_KEY_DOWN && keyboard_event.keyboard.keycode == ALLEGRO_KEY_R){
 					goto main_loop;
 				}
 			}
